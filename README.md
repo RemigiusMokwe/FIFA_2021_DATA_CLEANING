@@ -1,4 +1,7 @@
 # FIFA_2021_DATA_CLEANING
-![FIFA_21-1](https://user-images.githubusercontent.com/118398053/228780831-8e5821bd-87c5-4f97-ba55-2f5ebbe64244.jpg)
+![FIFA_21-1](https://user-images.githubusercontent.com/118398053/228782777-e8018842-b754-4a00-91b0-df15ab468c43.jpg)
+
 
 FIFA 2021 DATA CLEANING CHALLENGE USING R
+
+
