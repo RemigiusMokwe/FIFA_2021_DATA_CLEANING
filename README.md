@@ -203,9 +203,12 @@ fifa21_clean <- fifa21_clean %>% rename(OVERALL_RATING=X.OVA, POTENTIAL_RATING=P
                                         DEFENSIVE_ATTRIBUTE=DEF)
 ```
 #### CONCLUSION
-This indeed was a really messy dataset. It was indeed a challenge as i had to do alot of research to solve some the problems i encountered. I want to say Thank you to the organizers of this chanllenge and we await for more challenges like this. 
-Click on the link below to download the raw dataset file from the organizers and the cleaned file by me.
+This indeed was a really messy dataset. It was indeed a challenge as i had to do alot of research to solve some of the problems i encountered. I want to say Thank you to the organizers of this chanllenge and we await for more challenges like this. The dataset is now cleaned and ready for further analysis.
 
-Raw data- 
+Click on the link below to download the raw dataset file
 
-cleaned data- 
+Raw data- [fifa21 raw data v2.csv](https://github.com/RemigiusMokwe/FIFA_2021_DATA_CLEANING/files/11159147/fifa21.raw.data.v2.csv)
+
+
+cleaned data- [fifa21_clean_remi.csv](https://github.com/RemigiusMokwe/FIFA_2021_DATA_CLEANING/files/11159170/fifa21_clean_remi.csv)
+
