@@ -1,6 +1,7 @@
 # FIFA_2021_DATA_CLEANING_CHALLENGE
 
-![FIFA_21-1](https://user-images.githubusercontent.com/118398053/228782777-e8018842-b754-4a00-91b0-df15ab468c43.jpg)
+![FIFA21new](https://user-images.githubusercontent.com/118398053/230074879-1460cd6d-d312-4a9d-a38b-9dac450ffa2a.jpg)
+
 
 ## INTRODUCTION
 
@@ -119,6 +120,92 @@ fifa21_org$WEIGHT_KG <- as.numeric(fifa21_org$WEIGHT_KG)
 fifa21_org <- fifa21_org %>% rename(WEIGHT_KG=WEIGHT, HEIGHT_CM=HEIGHT)
 ```
 #### WAGES, VALUE & RELEASE_CLAUSE COLUMN
+These columns had currency sign and letter 'K & M' that needed to be removed before converting to numeric. I used the gsub function to remove the currency sign and created a function to convert the numbers to thousands and millions, because the K & M stood for thousand and million. After creating the function, i then applied it to each of the columns.
+|         Before     |          After                |                                 
+  ---------------------:|:----------------------
+  ![wages](https://user-images.githubusercontent.com/118398053/230062606-f8ac98a4-f195-4425-8356-7d99642357f0.png)|![wages_clean](https://user-images.githubusercontent.com/118398053/230062689-7c8fa79a-86ed-43a3-acfe-4a129eee9b85.png)
 
+```R
+fifa21_org2$VALUE <- gsub("€", "", fifa21_org2$VALUE)
+fifa21_org2$RELEASE_CLAUSE <- gsub("€", "", fifa21_org2$RELEASE_CLAUSE)
+fifa21_org2$WAGE <- gsub("€", "", fifa21_org2$WAGE)
+convert_value <- function(value) {
+  value_without_suffix <- gsub("[KM]", "", value)
+  value_as_number <- as.numeric(value_without_suffix)
+  if (grepl("K", value)) {
+    value_as_number <- value_as_number *1000
+  } else if (grepl("M", value)) {
+    value_as_number <- value_as_number *1000000 } 
+  return(value_as_number)
+}
+fifa21_org2$VALUE <-sapply(fifa21_org2$VALUE, convert_value)
+fifa21_org2$WAGE <-sapply(fifa21_org2$WAGE, convert_value)
+fifa21_org2$RELEASE_CLAUSE <-sapply(fifa21_org2$RELEASE_CLAUSE, convert_value)
+```
+#### CONTRACT & LOAN.DATE.END COLUMN
+The contract column had observations in different date formats. The word 'free' in the contract column means the player has no contract and there has no club. In order not to introduce N/A to the column players with 'free' in the contract column were removed and the contract column was split into 2, contract_start and contract_end for easy understanding. Also another column was created contract_type to describe the type of contract a player had. After splitting the column, contract_start was splitted into contract_start and contract_type, gsub was then used to remove irrelevant data from loan.date.end and contract_type. Loan_end was then merged with contract_end.
+|           Before     |            After                |                                 
+  ---------------------:|:----------------------
+  ![Contract](https://user-images.githubusercontent.com/118398053/230066998-7d324d51-a8e6-4ac4-a8b1-a24f8b980b59.png)|![contract_cleaned](https://user-images.githubusercontent.com/118398053/230067098-2b1c3d47-13bb-41e3-9e31-f82a6b23707d.png)
 
+```R
+fifa21_org2 <- subset(fifa21_org2, CLUB != "No_Club")
 
+fifa21_org22 <- separate(fifa21_org22, CONTRACT, into = c("CONTRACT_START", "CONTRACT_END"), sep = "~")
+fifa21_org22 <- separate(fifa21_org22, CONTRACT_START, into = c("CONTRACT_START", "CONTRACT_TYPE"), sep = ",")
+fifa21_org22$CONTRACT_TYPE <- gsub("2023", "", fifa21_org22$CONTRACT_TYPE)
+fifa21_org22$CONTRACT_TYPE <- gsub("2022", "", fifa21_org22$CONTRACT_TYPE)
+fifa21_org22$CONTRACT_TYPE <- gsub("2021", "", fifa21_org22$CONTRACT_TYPE)
+fifa21_org22$CONTRACT_TYPE <- gsub("2020", "", fifa21_org22$CONTRACT_TYPE)
+fifa21_org22$CONTRACT_TYPE <- gsub("On", "", fifa21_org22$CONTRACT_TYPE)
+fifa21_org22$CONTRACT_START <- gsub("Aug 1", "", fifa21_org22$CONTRACT_START)
+fifa21_org22$CONTRACT_START[fifa21_org22$CONTRACT_START %in% c("7")] <- "2021"
+fifa21_org222$CONTRACT_TYPE[is.na(fifa21_org222$CONTRACT_TYPE)] <- "Permanent"
+fifa21_org222$CONTRACT_START <- paste(fifa21_org222$LOAN_END, fifa21_org222$CONTRACT_START)
+fifa21_org222$CONTRACT_END <- ifelse(is.na(fifa21_org222$CONTRACT_END), fifa21_org222$LOAN_END, paste(
+                                fifa21_org222$CONTRACT_END, fifa21_org222$LOAN_END))
+fifa21_cleaned1$CONTRACT_START1 <- as.Date(paste0(fifa21_cleaned1$CONTRACT_START1, "-01-01"))
+fifa21_cleaned1$CONTRACT_END1 <- as.Date(paste0(fifa21_cleaned1$CONTRACT_END1, "-01-01"))
+```
+#### HITS, WF,SM & IR COLUMN
+The HITS column had missing values, so the rows that had missing values were all given '0' as their value. The WF, SM & IR had special characters. Those were removed and all columns data type were changed to numeric.
+|          Before     |         After                |                                 
+  ---------------------:|:----------------------
+  ![HITS](https://user-images.githubusercontent.com/118398053/230070478-1134f827-8e1d-429a-a9de-50bf26f0ee60.png)|![HITS_cleaned](https://user-images.githubusercontent.com/118398053/230070596-ea1d9c03-f9b5-421e-aa1d-efa1de189eff.png)
+
+```R
+fifa21_cleaned1$HITS <- as.numeric(fifa21_cleaned1$HITS)
+fifa21_cleaned1$HITS[is.na(fifa21_cleaned1$HITS)] <- "0"
+fifa21_cleaned1$WEAK_FOOT <- gsub("★", "", fifa21_cleaned1$WEAK_FOOT)
+fifa21_cleaned1$SKILL_MOVES_RATING <- gsub("★", "", fifa21_cleaned1$SKILL_MOVES_RATING)
+fifa21_cleaned1$INJURY_RATING <- gsub("★", "", fifa21_cleaned1$INJURY_RATING)
+fifa21_cleaned1$WEAK_FOOT <- as.numeric(fifa21_cleaned1$WEAK_FOOT)
+fifa21_cleaned1$SKILL_MOVES_RATING <- as.numeric(fifa21_cleaned1$SKILL_MOVES_RATING)
+fifa21_cleaned1$INJURY_RATING <- as.numeric(fifa21_cleaned1$INJURY_RATING)
+```
+#### X.OVA, POT, BOV, DRI, PHY, PAC, SHO, & DEF COLUMN
+In my own view all this columns are meant to be in percentages. Why because for example the dataset cant have 2 dribbling columns but in this data set it has 2. which means 1 of the columns shows the overall dribbling attribute of the player and not just his/her dribbling skill alone. Meaning Column DRI- shows the overall dribbling attribute of the player and column Dribbling- shows the dribbling skill of the player alone. I used the paste0 function to paste the % sign and used the rename function to rename the columns for better understanding.
+|          Before     |           After                |                                 
+  ---------------------:|:----------------------
+![Percentage](https://user-images.githubusercontent.com/118398053/230073221-b3cd35b1-dd3a-4ec8-b5c8-94bde283d0ff.png)|![Percentage_cleaned](https://user-images.githubusercontent.com/118398053/230073327-413f02bf-ed23-4663-8125-c39243d446a7.png)
+
+```R
+fifa21_clean$X.OVA <- paste0(fifa21_clean$X.OVA, "%")
+fifa21_clean$BOV <- paste0(fifa21_clean$BOV, "%") 
+fifa21_clean$POT <- paste0(fifa21_clean$POT, "%")
+fifa21_clean$DRI <- paste0(fifa21_clean$DRI, "%")
+fifa21_clean$PHY <- paste0(fifa21_clean$PHY, "%")
+fifa21_clean$DEF <- paste0(fifa21_clean$DEF, "%")
+fifa21_clean$PACE <- paste0(fifa21_clean$PACE, "%")
+fifa21_clean$SHOOTING_ATTRIBUTE <- paste0(fifa21_clean$SHOOTING_ATTRIBUTE, "%")
+fifa21_clean <- fifa21_clean %>% rename(OVERALL_RATING=X.OVA, POTENTIAL_RATING=POT, 
+                                        BEST_OVERALL_RATING=BOV, DRIBBLING_ATTRIBUTE=DRI, PHYSICAL_ATTRIBUTE=PHY,
+                                        DEFENSIVE_ATTRIBUTE=DEF)
+```
+#### CONCLUSION
+This indeed was a really messy dataset. It was indeed a challenge as i had to do alot of research to solve some the problems i encountered. I want to say Thank you to the organizers of this chanllenge and we await for more challenges like this. 
+Click on the link below to download the raw dataset file from the organizers and the cleaned file by me.
+
+Raw data- 
+
+cleaned data- 
