@@ -82,7 +82,7 @@ fifa21_org <- fifa21_org |>
 fifa21_org$FULL_NAME <- gsub(" ", "_", fifa21_org$FULL_NAME)
 ```
 #### CLUB COLUMN
-The club column had numbers attached to it and it had open spaces. I removed the numbers and replaced spaces with underscore.
+The club column had the figure '1' attached to some team names and it had open spaces. I removed the number and replaced spaces with underscore.
 |       Before     |            After                |                                 
   ---------------------:|:----------------------
   ![club](https://user-images.githubusercontent.com/118398053/228947897-9308f3ee-8076-445e-b6aa-331360daece5.png)|![club_cleaned](https://user-images.githubusercontent.com/118398053/228947963-8b2056e3-c400-46d4-ad9a-d2c91201ba57.png)
@@ -184,7 +184,7 @@ fifa21_cleaned1$SKILL_MOVES_RATING <- as.numeric(fifa21_cleaned1$SKILL_MOVES_RAT
 fifa21_cleaned1$INJURY_RATING <- as.numeric(fifa21_cleaned1$INJURY_RATING)
 ```
 #### X.OVA, POT, BOV, DRI, PHY, PAC, SHO, & DEF COLUMN
-In my own view all this columns are meant to be in percentages. Why because for example the dataset cant have 2 dribbling columns but in this data set it has 2. which means 1 of the columns shows the overall dribbling attribute of the player and not just his/her dribbling skill alone. Meaning Column DRI- shows the overall dribbling attribute of the player and column Dribbling- shows the dribbling skill of the player alone. I used the paste0 function to paste the % sign and used the rename function to rename the columns for better understanding.
+In my own view all this columns are meant to be in percentages. Why, because for example the dataset cant have 2 dribbling columns but in this data set it has 2. which means 1 of the columns shows the overall dribbling attribute of the player and not just his/her dribbling skill alone. Meaning Column DRI- shows the overall dribbling attribute of the player and column Dribbling- shows the dribbling skill of the player alone. I used the paste0 function to paste the % sign and used the rename function to rename the columns for better understanding.
 |          Before     |           After                |                                 
   ---------------------:|:----------------------
 ![Percentage](https://user-images.githubusercontent.com/118398053/230073221-b3cd35b1-dd3a-4ec8-b5c8-94bde283d0ff.png)|![Percentage_cleaned](https://user-images.githubusercontent.com/118398053/230073327-413f02bf-ed23-4663-8125-c39243d446a7.png)
